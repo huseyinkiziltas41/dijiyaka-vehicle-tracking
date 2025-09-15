@@ -210,6 +210,12 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
+.drivers-table th:last-child,
+.drivers-table td:last-child {
+  text-align: center;
+  width: 80px;
+}
+
 .drivers-table th {
   background: #f8fafc;
   font-weight: 600;
@@ -278,18 +284,22 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 10px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: all 0.2s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .delete-button:hover {
   background: #dc2626;
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.4);
 }
 
 .delete-button:active {
