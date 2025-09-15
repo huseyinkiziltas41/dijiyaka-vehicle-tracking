@@ -24,63 +24,7 @@ const FACTORY_LOCATION = {
 };
 
 // In-memory storage for drivers (in production, use a database)
-let drivers = [
-  {
-    id: 'driver-001',
-    name: 'Mehmet Yılmaz',
-    phone: '+90 532 123 4567',
-    vehiclePlate: '34 ABC 123',
-    status: 'online',
-    location: { lat: 41.0082, lng: 28.9784 }, // İstanbul
-    destination: 'Philip Morris Fabrikası',
-    lastUpdate: new Date(),
-    createdAt: new Date()
-  },
-  {
-    id: 'driver-002',
-    name: 'Ahmet Kaya',
-    phone: '+90 533 234 5678',
-    vehiclePlate: '06 DEF 456',
-    status: 'online',
-    location: { lat: 39.9334, lng: 32.8597 }, // Ankara
-    destination: 'Philip Morris Fabrikası',
-    lastUpdate: new Date(),
-    createdAt: new Date()
-  },
-  {
-    id: 'driver-003',
-    name: 'Fatma Özkan',
-    phone: '+90 534 345 6789',
-    vehiclePlate: '35 GHI 789',
-    status: 'online',
-    location: { lat: 38.4192, lng: 27.1287 }, // İzmir (En yakın)
-    destination: 'Philip Morris Fabrikası',
-    lastUpdate: new Date(),
-    createdAt: new Date()
-  },
-  {
-    id: 'driver-004',
-    name: 'Ali Demir',
-    phone: '+90 535 456 7890',
-    vehiclePlate: '01 JKL 012',
-    status: 'online',
-    location: { lat: 37.0662, lng: 37.3833 }, // Şanlıurfa
-    destination: 'Philip Morris Fabrikası',
-    lastUpdate: new Date(),
-    createdAt: new Date()
-  },
-  {
-    id: 'driver-005',
-    name: 'Zeynep Arslan',
-    phone: '+90 536 567 8901',
-    vehiclePlate: '07 MNO 345',
-    status: 'offline',
-    location: { lat: 36.8969, lng: 30.7133 }, // Antalya
-    destination: null,
-    lastUpdate: new Date(Date.now() - 30 * 60 * 1000), // 30 dakika önce
-    createdAt: new Date()
-  }
-];
+let drivers = [];
 let activeConnections = new Map();
 
 // Middleware
