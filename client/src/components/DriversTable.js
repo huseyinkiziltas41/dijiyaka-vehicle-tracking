@@ -1,11 +1,6 @@
 import React from 'react';
-import axios from 'axios';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/api' 
-  : 'http://localhost:3000/api';
-
-const DriversTable = ({ drivers, onDriverDeleted }) => {
+const DriversTable = ({ drivers, onDeleteDriver }) => {
   const formatLastUpdate = (dateString) => {
     if (!dateString) return 'Hiç güncellenmedi';
     
@@ -32,20 +27,6 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
     }
   };
 
-  const handleDeleteDriver = async (driverId, driverName) => {
-    if (window.confirm(`${driverName} adlı sürücüyü silmek istediğinizden emin misiniz?\n\nNot: Sürücü tekrar konum paylaştığında otomatik olarak geri gelecektir.`)) {
-      try {
-        await axios.delete(`${API_BASE_URL}/driver/${driverId}`);
-        if (onDriverDeleted) {
-          onDriverDeleted(driverId);
-        }
-      } catch (error) {
-        console.error('Sürücü silinirken hata:', error);
-        alert('Sürücü silinirken bir hata oluştu');
-      }
-    }
-  };
-
   const getStatusBadge = (status) => {
     const statusMap = {
       'online': { text: 'Aktif', class: 'status-online' },
@@ -60,6 +41,12 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
         {statusInfo.text}
       </span>
     );
+  };
+
+  const handleDeleteDriver = (driverId, driverName) => {
+    if (window.confirm(`${driverName} adlı sürücüyü silmek istediğinizden emin misiniz?\n\nNot: Sürücü mobil uygulamadan konum paylaştığında otomatik olarak geri gelecektir.`)) {
+      onDeleteDriver(driverId);
+    }
   };
 
   if (drivers.length === 0) {
@@ -124,7 +111,7 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
                 <button 
                   className="delete-button"
                   onClick={() => handleDeleteDriver(driver.id, driver.name)}
-                  title="Sürücüyü sil (tekrar konum paylaştığında geri gelir)"
+                  title="Sürücüyü Sil"
                 >
                   🗑️
                 </button>

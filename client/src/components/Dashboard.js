@@ -3,7 +3,7 @@ import StatsCards from './StatsCards';
 import DriversTable from './DriversTable';
 import MapView from './MapView';
 
-const Dashboard = ({ drivers, factoryLocation, socket, onDriverDeleted }) => {
+const Dashboard = ({ drivers, factoryLocation, socket, onDeleteDriver }) => {
   return (
     <div className="dashboard-container">
       <div className="stats-section">
@@ -15,7 +15,7 @@ const Dashboard = ({ drivers, factoryLocation, socket, onDriverDeleted }) => {
           <div className="section-header">
             <h2 className="section-title">Aktif Sürücüler</h2>
           </div>
-          <DriversTable drivers={drivers} onDriverDeleted={onDriverDeleted} />
+          <DriversTable drivers={drivers} onDeleteDriver={onDeleteDriver} />
         </div>
         
         <div className="map-section">

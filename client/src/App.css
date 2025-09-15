@@ -244,27 +244,28 @@
 }
 
 .distance-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.875rem;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-weight: 600;
-  background-color: #f1f5f9;
-  color: #475569;
+  font-size: 0.875rem;
 }
 
 .distance-badge.closest {
-  background-color: #fef3c7;
-  color: #92400e;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .distance-badge.second {
-  background-color: #e5e7eb;
-  color: #374151;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #d97706;
 }
 
 .distance-badge.third {
-  background-color: #fde68a;
-  color: #92400e;
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+  color: #ea580c;
 }
 
 .last-update {
@@ -272,22 +273,27 @@
   font-size: 0.75rem;
 }
 
-/* Delete button styles */
 .delete-button {
-  background: none;
+  background: #ef4444;
+  color: white;
   border: none;
-  font-size: 1.2rem;
+  border-radius: 8px;
+  padding: 8px 12px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
+  font-size: 1rem;
   transition: all 0.2s ease;
-  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-button:hover {
-  background-color: #fee2e2;
-  opacity: 1;
-  transform: scale(1.1);
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.delete-button:active {
+  transform: scale(0.95);
 }
 
 .map-container {

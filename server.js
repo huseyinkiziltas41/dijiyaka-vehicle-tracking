@@ -25,7 +25,7 @@ const FACTORY_LOCATION = {
 
 // In-memory storage for drivers (in production, use a database)
 let drivers = [];
-let deletedDrivers = []; // Soft deleted drivers
+let deletedDrivers = []; // Store deleted drivers for restoration
 let activeConnections = new Map();
 
 // Middleware
@@ -81,35 +81,6 @@ app.post('/api/driver/register', (req, res) => {
     return res.status(400).json({ error: 'Tüm alanlar gereklidir' });
   }
 
-  // Check if driver exists in deleted drivers (restore if found)
-  const deletedDriverIndex = deletedDrivers.findIndex(d => 
-    d.phone === phone && d.vehiclePlate === vehiclePlate
-  );
-  
-  if (deletedDriverIndex !== -1) {
-    // Restore deleted driver
-    const restoredDriver = deletedDrivers[deletedDriverIndex];
-    restoredDriver.name = name; // Update name in case it changed
-    restoredDriver.status = 'offline';
-    restoredDriver.location = null;
-    restoredDriver.destination = null;
-    restoredDriver.lastUpdate = new Date();
-    
-    drivers.push(restoredDriver);
-    deletedDrivers.splice(deletedDriverIndex, 1);
-    
-    // Broadcast to admin dashboard
-    io.emit('driverRestored', restoredDriver);
-    
-    return res.json({ success: true, driverId: restoredDriver.id, restored: true });
-  }
-
-  // Check if driver already exists in active drivers
-  const existingDriver = drivers.find(d => d.phone === phone && d.vehiclePlate === vehiclePlate);
-  if (existingDriver) {
-    return res.status(400).json({ error: 'Bu telefon ve plaka ile kayıtlı sürücü zaten mevcut' });
-  }
-
   const driver = {
     id: uuidv4(),
     name,
@@ -148,53 +119,33 @@ app.post('/api/driver/login', (req, res) => {
   res.json({ success: true, driver });
 });
 
-app.post('/api/driver/logout', (req, res) => {
-  const { driverId } = req.body;
-  
-  const driver = drivers.find(d => d.id === driverId);
-  
-  if (!driver) {
-    return res.status(404).json({ error: 'Sürücü bulunamadı' });
-  }
-
-  driver.status = 'offline';
-  driver.lastUpdate = new Date();
-  
-  // Broadcast to admin dashboard
-  io.emit('driverStatusChanged', driver);
-  
-  res.json({ success: true });
-});
-
 app.post('/api/driver/location', (req, res) => {
   const { driverId, location } = req.body;
   
   let driver = drivers.find(d => d.id === driverId);
   
-  // If driver not found in active drivers, check deleted drivers and restore
+  // If driver not found in active list, check deleted drivers and restore
   if (!driver) {
-    const deletedDriverIndex = deletedDrivers.findIndex(d => d.id === driverId);
-    if (deletedDriverIndex !== -1) {
-      // Restore deleted driver when they share location
-      const restoredDriver = deletedDrivers[deletedDriverIndex];
-      restoredDriver.status = 'online';
-      restoredDriver.location = location;
-      restoredDriver.lastUpdate = new Date();
+    const deletedDriver = deletedDrivers.find(d => d.id === driverId);
+    if (deletedDriver) {
+      // Restore deleted driver
+      driver = { ...deletedDriver };
+      driver.status = 'online';
+      driver.lastUpdate = new Date();
+      drivers.push(driver);
       
-      drivers.push(restoredDriver);
-      deletedDrivers.splice(deletedDriverIndex, 1);
+      // Remove from deleted list
+      deletedDrivers = deletedDrivers.filter(d => d.id !== driverId);
       
-      driver = restoredDriver;
-      
-      // Broadcast restoration to admin dashboard
+      // Broadcast driver restoration
       io.emit('driverRestored', driver);
     } else {
       return res.status(404).json({ error: 'Sürücü bulunamadı' });
     }
-  } else {
-    driver.location = location;
-    driver.lastUpdate = new Date();
   }
+
+  driver.location = location;
+  driver.lastUpdate = new Date();
   
   // Calculate distance to factory
   const distance = calculateDistance(
@@ -235,7 +186,7 @@ app.post('/api/driver/destination', (req, res) => {
   res.json({ success: true });
 });
 
-// Delete driver endpoint (soft delete)
+// Delete driver endpoint
 app.delete('/api/driver/:driverId', (req, res) => {
   const { driverId } = req.params;
   
@@ -244,13 +195,13 @@ app.delete('/api/driver/:driverId', (req, res) => {
   if (driverIndex === -1) {
     return res.status(404).json({ error: 'Sürücü bulunamadı' });
   }
-
+  
+  // Move driver to deleted list
   const deletedDriver = drivers[driverIndex];
   deletedDriver.deletedAt = new Date();
-  deletedDriver.status = 'deleted';
-  
-  // Move to deleted drivers array
   deletedDrivers.push(deletedDriver);
+  
+  // Remove from active drivers
   drivers.splice(driverIndex, 1);
   
   // Broadcast to admin dashboard

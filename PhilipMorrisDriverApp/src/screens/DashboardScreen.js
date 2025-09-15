@@ -54,20 +54,8 @@ export default function DashboardScreen({ navigation }) {
           text: 'Çıkış Yap',
           style: 'destructive',
           onPress: async () => {
-            try {
-              // Set driver status to offline before logout
-              const driverId = await AsyncStorage.getItem('driverId');
-              if (driverId) {
-                await axios.post(`${API_BASE_URL}/driver/logout`, {
-                  driverId: driverId
-                });
-              }
-            } catch (error) {
-              console.error('Logout API error:', error);
-            } finally {
-              await AsyncStorage.multiRemove(['driverId', 'driverData']);
-              navigation.replace('Login');
-            }
+            await AsyncStorage.multiRemove(['driverId', 'driverData']);
+            navigation.replace('Login');
           }
         }
       ]
