@@ -148,6 +148,24 @@ app.post('/api/driver/login', (req, res) => {
   res.json({ success: true, driver });
 });
 
+app.post('/api/driver/logout', (req, res) => {
+  const { driverId } = req.body;
+  
+  const driver = drivers.find(d => d.id === driverId);
+  
+  if (!driver) {
+    return res.status(404).json({ error: 'Sürücü bulunamadı' });
+  }
+
+  driver.status = 'offline';
+  driver.lastUpdate = new Date();
+  
+  // Broadcast to admin dashboard
+  io.emit('driverStatusChanged', driver);
+  
+  res.json({ success: true });
+});
+
 app.post('/api/driver/location', (req, res) => {
   const { driverId, location } = req.body;
   
