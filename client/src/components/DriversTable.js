@@ -1,6 +1,11 @@
 import React from 'react';
+import axios from 'axios';
 
-const DriversTable = ({ drivers }) => {
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '/api' 
+  : 'http://localhost:3000/api';
+
+const DriversTable = ({ drivers, onDriverDeleted }) => {
   const formatLastUpdate = (dateString) => {
     if (!dateString) return 'Hiç güncellenmedi';
     
@@ -24,6 +29,20 @@ const DriversTable = ({ drivers }) => {
       case 1: return '🥈'; // İkinci
       case 2: return '🥉'; // Üçüncü
       default: return `${index + 1}.`; // Diğerleri
+    }
+  };
+
+  const handleDeleteDriver = async (driverId, driverName) => {
+    if (window.confirm(`${driverName} adlı sürücüyü silmek istediğinizden emin misiniz?\n\nNot: Sürücü tekrar konum paylaştığında otomatik olarak geri gelecektir.`)) {
+      try {
+        await axios.delete(`${API_BASE_URL}/driver/${driverId}`);
+        if (onDriverDeleted) {
+          onDriverDeleted(driverId);
+        }
+      } catch (error) {
+        console.error('Sürücü silinirken hata:', error);
+        alert('Sürücü silinirken bir hata oluştu');
+      }
     }
   };
 
@@ -66,6 +85,7 @@ const DriversTable = ({ drivers }) => {
             <th>Durum</th>
             <th>Mesafe</th>
             <th>Son Güncelleme</th>
+            <th>İşlemler</th>
           </tr>
         </thead>
         <tbody>
@@ -99,6 +119,15 @@ const DriversTable = ({ drivers }) => {
                 <div className="last-update">
                   {formatLastUpdate(driver.lastUpdate)}
                 </div>
+              </td>
+              <td>
+                <button 
+                  className="delete-button"
+                  onClick={() => handleDeleteDriver(driver.id, driver.name)}
+                  title="Sürücüyü sil (tekrar konum paylaştığında geri gelir)"
+                >
+                  🗑️
+                </button>
               </td>
             </tr>
           ))}

@@ -56,6 +56,23 @@ function App() {
       ));
     });
 
+    newSocket.on('driverDeleted', (data) => {
+      setDrivers(prev => prev.filter(driver => driver.id !== data.driverId));
+    });
+
+    newSocket.on('driverRestored', (restoredDriver) => {
+      setDrivers(prev => {
+        const existingIndex = prev.findIndex(d => d.id === restoredDriver.id);
+        if (existingIndex !== -1) {
+          return prev.map(driver => 
+            driver.id === restoredDriver.id ? restoredDriver : driver
+          );
+        } else {
+          return [...prev, restoredDriver];
+        }
+      });
+    });
+
     // Fetch initial data
     fetchDrivers();
     fetchFactoryLocation();
@@ -85,6 +102,10 @@ function App() {
     }
   };
 
+  const handleDriverDeleted = (driverId) => {
+    setDrivers(prev => prev.filter(driver => driver.id !== driverId));
+  };
+
   return (
     <div className="App">
       <Header connectionStatus={connectionStatus} />
@@ -92,6 +113,7 @@ function App() {
         drivers={drivers} 
         factoryLocation={factoryLocation}
         socket={socket}
+        onDriverDeleted={handleDriverDeleted}
       />
     </div>
   );
