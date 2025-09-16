@@ -6,13 +6,13 @@ import MapView from './MapView';
 const Dashboard = ({ drivers, factoryLocation, socket, onDriverDeleted }) => {
   const [activeTab, setActiveTab] = useState('active');
 
-  // Aktif sürücüler: Son 5 dakika içinde konum paylaşanlar
+  // Aktif sürücüler: Son 10 saniye içinde konum paylaşanlar
   const activeDrivers = drivers.filter(driver => {
     if (!driver.lastUpdate) return false;
     const lastUpdate = new Date(driver.lastUpdate);
     const now = new Date();
-    const diffMinutes = (now - lastUpdate) / (1000 * 60);
-    return diffMinutes <= 5;
+    const diffSeconds = (now - lastUpdate) / 1000;
+    return diffSeconds <= 10;
   });
 
   // Tüm sürücüler
