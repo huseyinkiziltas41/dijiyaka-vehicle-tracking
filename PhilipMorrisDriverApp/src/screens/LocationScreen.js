@@ -12,7 +12,7 @@ import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.1.126:3000/api';
+const API_BASE_URL = 'https://philip-morris-tracking.onrender.com/api';
 
 export default function LocationScreen({ navigation }) {
   const [location, setLocation] = useState(null);
