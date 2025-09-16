@@ -177,12 +177,21 @@
   color: #dc2626;
 }
 
-.drivers-section, .map-section {
+.drivers-section {
   background: white;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.map-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .section-header {
@@ -201,22 +210,25 @@
 .drivers-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 800px;
 }
 
 .drivers-table th,
 .drivers-table td {
-  padding: 1rem;
+  padding: 0.5rem 0.4rem;
   text-align: left;
   border-bottom: 1px solid #f1f5f9;
+  font-size: 0.75rem;
 }
 
 .drivers-table th {
   background: #f8fafc;
   font-weight: 600;
   color: #475569;
-  font-size: 0.875rem;
+  font-size: 0.625rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .drivers-table tr:hover {
@@ -226,30 +238,35 @@
 .driver-name {
   font-weight: 600;
   color: #1e293b;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
 .driver-phone {
   color: #64748b;
-  font-size: 0.875rem;
+  font-size: 0.625rem;
+  white-space: nowrap;
 }
 
 .vehicle-plate {
   background: #1e3a8a;
   color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 2px 4px;
+  border-radius: 3px;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.625rem;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .distance-badge {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   color: #1d4ed8;
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 3px 6px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.625rem;
+  white-space: nowrap;
 }
 
 .distance-badge.closest {
@@ -270,23 +287,24 @@
 
 .last-update {
   color: #64748b;
-  font-size: 0.75rem;
+  font-size: 0.5rem;
+  white-space: nowrap;
 }
 
 .delete-btn {
   background: #ef4444;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 4px;
+  padding: 4px 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.75rem;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  height: 36px;
+  min-width: 28px;
+  height: 24px;
 }
 
 .delete-btn:hover:not(:disabled) {
