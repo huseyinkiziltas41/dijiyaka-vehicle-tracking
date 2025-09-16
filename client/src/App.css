@@ -180,31 +180,56 @@
 .drivers-section {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 1rem;
-  margin-bottom: 2rem;
-  overflow-x: auto;
-}
-
-.map-section {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow: hidden;
 }
 
 .section-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 15px;
 }
 
 .section-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #1e293b;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 600;
   margin: 0;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tab-button {
+  background: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.tab-button.active {
+  background: #1e3a8a;
+  border-color: #1e3a8a;
+  color: white;
+}
+
+.tab-button.active:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 .drivers-table {
