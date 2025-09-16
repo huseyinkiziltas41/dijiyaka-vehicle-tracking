@@ -60,10 +60,6 @@ function App() {
       setDrivers(prev => prev.filter(driver => driver.id !== data.driverId));
     });
 
-    newSocket.on('driverRestored', (driver) => {
-      setDrivers(prev => [...prev, driver]);
-    });
-
     // Fetch initial data
     fetchDrivers();
     fetchFactoryLocation();
@@ -93,21 +89,8 @@ function App() {
     }
   };
 
-  const handleDeleteDriver = async (driverId) => {
-    try {
-      const response = await fetch(`/api/driver/${driverId}`, {
-        method: 'DELETE'
-      });
-      
-      if (response.ok) {
-        // Driver will be removed via socket event
-        console.log('Sürücü silindi');
-      } else {
-        console.error('Sürücü silinirken hata oluştu');
-      }
-    } catch (error) {
-      console.error('Sürücü silinirken hata:', error);
-    }
+  const handleDriverDeleted = (driverId) => {
+    setDrivers(prev => prev.filter(driver => driver.id !== driverId));
   };
 
   return (
@@ -117,7 +100,7 @@ function App() {
         drivers={drivers} 
         factoryLocation={factoryLocation}
         socket={socket}
-        onDeleteDriver={handleDeleteDriver}
+        onDriverDeleted={handleDriverDeleted}
       />
     </div>
   );

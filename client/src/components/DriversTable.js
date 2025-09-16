@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const DriversTable = ({ drivers, onDeleteDriver }) => {
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://philip-morris-tracking.onrender.com/api' 
+  : 'http://localhost:3000/api';
+
+const DriversTable = ({ drivers, onDriverDeleted }) => {
+  const [deletingDriver, setDeletingDriver] = useState(null);
   const formatLastUpdate = (dateString) => {
     if (!dateString) return 'Hiç güncellenmedi';
     
@@ -27,6 +33,29 @@ const DriversTable = ({ drivers, onDeleteDriver }) => {
     }
   };
 
+  const handleDeleteDriver = async (driver) => {
+    if (!window.confirm(`${driver.name} adlı sürücüyü silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz.`)) {
+      return;
+    }
+
+    setDeletingDriver(driver.id);
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/driver/${driver.id}`);
+      
+      if (response.data.success) {
+        alert(`${driver.name} başarıyla silindi.`);
+        if (onDriverDeleted) {
+          onDriverDeleted(driver.id);
+        }
+      }
+    } catch (error) {
+      console.error('Sürücü silme hatası:', error);
+      alert('Sürücü silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setDeletingDriver(null);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const statusMap = {
       'online': { text: 'Aktif', class: 'status-online' },
@@ -41,12 +70,6 @@ const DriversTable = ({ drivers, onDeleteDriver }) => {
         {statusInfo.text}
       </span>
     );
-  };
-
-  const handleDeleteDriver = (driverId, driverName) => {
-    if (window.confirm(`${driverName} adlı sürücüyü silmek istediğinizden emin misiniz?\n\nNot: Sürücü mobil uygulamadan konum paylaştığında otomatik olarak geri gelecektir.`)) {
-      onDeleteDriver(driverId);
-    }
   };
 
   if (drivers.length === 0) {
@@ -109,11 +132,12 @@ const DriversTable = ({ drivers, onDeleteDriver }) => {
               </td>
               <td>
                 <button 
-                  className="delete-button"
-                  onClick={() => handleDeleteDriver(driver.id, driver.name)}
-                  title="Sürücüyü Sil"
+                  className="delete-btn"
+                  onClick={() => handleDeleteDriver(driver)}
+                  disabled={deletingDriver === driver.id}
+                  title={`${driver.name} sürücüsünü sil`}
                 >
-                  🗑️
+                  {deletingDriver === driver.id ? '⏳' : '🗑️'}
                 </button>
               </td>
             </tr>

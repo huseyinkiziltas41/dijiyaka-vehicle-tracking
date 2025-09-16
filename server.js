@@ -24,8 +24,48 @@ const FACTORY_LOCATION = {
 };
 
 // In-memory storage for drivers (in production, use a database)
-let drivers = [];
-let deletedDrivers = []; // Store deleted drivers for restoration
+let drivers = [
+  {
+    id: 'test-driver-1',
+    name: 'Ahmet Yılmaz',
+    phone: '+90 532 123 4567',
+    vehiclePlate: '34 ABC 123',
+    status: 'online',
+    location: { lat: 39.9334, lng: 32.8597 }, // Ankara
+    lastUpdate: new Date(),
+    destination: 'Philip Morris Fabrikası'
+  },
+  {
+    id: 'test-driver-2',
+    name: 'Mehmet Demir',
+    phone: '+90 533 987 6543',
+    vehiclePlate: '06 XYZ 789',
+    status: 'offline',
+    location: { lat: 41.0082, lng: 28.9784 }, // İstanbul
+    lastUpdate: new Date(Date.now() - 30 * 60000), // 30 dk önce
+    destination: null
+  },
+  {
+    id: 'test-driver-3',
+    name: 'Ali Kaya',
+    phone: '+90 534 555 1234',
+    vehiclePlate: '35 DEF 456',
+    status: 'en-route',
+    location: { lat: 38.4192, lng: 27.1287 }, // İzmir
+    lastUpdate: new Date(Date.now() - 5 * 60000), // 5 dk önce
+    destination: 'Philip Morris Fabrikası'
+  },
+  {
+    id: 'test-driver-4',
+    name: 'Fatma Özkan',
+    phone: '+90 535 777 8888',
+    vehiclePlate: '07 GHI 321',
+    status: 'online',
+    location: { lat: 37.0662, lng: 37.3833 }, // Şanlıurfa
+    lastUpdate: new Date(Date.now() - 2 * 60000), // 2 dk önce
+    destination: 'Philip Morris Fabrikası'
+  }
+];
 let activeConnections = new Map();
 
 // Middleware
@@ -122,26 +162,10 @@ app.post('/api/driver/login', (req, res) => {
 app.post('/api/driver/location', (req, res) => {
   const { driverId, location } = req.body;
   
-  let driver = drivers.find(d => d.id === driverId);
+  const driver = drivers.find(d => d.id === driverId);
   
-  // If driver not found in active list, check deleted drivers and restore
   if (!driver) {
-    const deletedDriver = deletedDrivers.find(d => d.id === driverId);
-    if (deletedDriver) {
-      // Restore deleted driver
-      driver = { ...deletedDriver };
-      driver.status = 'online';
-      driver.lastUpdate = new Date();
-      drivers.push(driver);
-      
-      // Remove from deleted list
-      deletedDrivers = deletedDrivers.filter(d => d.id !== driverId);
-      
-      // Broadcast driver restoration
-      io.emit('driverRestored', driver);
-    } else {
-      return res.status(404).json({ error: 'Sürücü bulunamadı' });
-    }
+    return res.status(404).json({ error: 'Sürücü bulunamadı' });
   }
 
   driver.location = location;
@@ -195,19 +219,21 @@ app.delete('/api/driver/:driverId', (req, res) => {
   if (driverIndex === -1) {
     return res.status(404).json({ error: 'Sürücü bulunamadı' });
   }
-  
-  // Move driver to deleted list
+
   const deletedDriver = drivers[driverIndex];
-  deletedDriver.deletedAt = new Date();
-  deletedDrivers.push(deletedDriver);
-  
-  // Remove from active drivers
   drivers.splice(driverIndex, 1);
   
   // Broadcast to admin dashboard
-  io.emit('driverDeleted', { driverId });
+  io.emit('driverDeleted', {
+    driverId: driverId,
+    driverName: deletedDriver.name
+  });
   
-  res.json({ success: true, message: 'Sürücü silindi' });
+  res.json({ 
+    success: true, 
+    message: `${deletedDriver.name} başarıyla silindi`,
+    deletedDriver: deletedDriver
+  });
 });
 
 // Socket.IO connection handling
