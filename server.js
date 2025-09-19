@@ -24,48 +24,31 @@ const FACTORY_LOCATION = {
 };
 
 // In-memory storage for drivers (in production, use a database)
-let drivers = [
-  {
-    id: 'test-driver-1',
-    name: 'Ahmet Yılmaz',
-    phone: '+90 532 123 4567',
-    vehiclePlate: '34 ABC 123',
-    status: 'online',
-    location: { lat: 39.9334, lng: 32.8597 }, // Ankara
-    lastUpdate: new Date(),
-    destination: 'Philip Morris Fabrikası'
-  },
-  {
-    id: 'test-driver-2',
-    name: 'Mehmet Demir',
-    phone: '+90 533 987 6543',
-    vehiclePlate: '06 XYZ 789',
-    status: 'offline',
-    location: { lat: 41.0082, lng: 28.9784 }, // İstanbul
-    lastUpdate: new Date(Date.now() - 30 * 60000), // 30 dk önce
-    destination: null
-  },
-  {
-    id: 'test-driver-3',
-    name: 'Ali Kaya',
-    phone: '+90 534 555 1234',
-    vehiclePlate: '35 DEF 456',
-    status: 'en-route',
-    location: { lat: 38.4192, lng: 27.1287 }, // İzmir
-    lastUpdate: new Date(Date.now() - 5 * 60000), // 5 dk önce
-    destination: 'Philip Morris Fabrikası'
-  },
-  {
-    id: 'test-driver-4',
-    name: 'Fatma Özkan',
-    phone: '+90 535 777 8888',
-    vehiclePlate: '07 GHI 321',
-    status: 'online',
-    location: { lat: 37.0662, lng: 37.3833 }, // Şanlıurfa
-    lastUpdate: new Date(Date.now() - 2 * 60000), // 2 dk önce
-    destination: 'Philip Morris Fabrikası'
-  }
-];
+let drivers = [];
+
+// Driver status management
+const updateDriverStatus = () => {
+  const now = new Date();
+  drivers.forEach(driver => {
+    if (!driver.lastUpdate) {
+      driver.status = 'offline';
+      return;
+    }
+    
+    const timeDiff = (now - new Date(driver.lastUpdate)) / (1000 * 60); // minutes
+    
+    if (timeDiff > 5) {
+      driver.status = 'inactive'; // 5 dakikadan fazla konum güncellemesi yok
+    } else if (timeDiff <= 1) {
+      driver.status = 'active'; // Son 1 dakika içinde güncelleme var
+    }
+    // 1-5 dakika arası durumda mevcut status korunur
+  });
+};
+
+// Her 30 saniyede bir driver statuslarını güncelle
+setInterval(updateDriverStatus, 30000);
+
 let activeConnections = new Map();
 
 // Middleware
@@ -170,6 +153,7 @@ app.post('/api/driver/location', (req, res) => {
 
   driver.location = location;
   driver.lastUpdate = new Date();
+  driver.status = 'active'; // Konum güncellemesi geldiğinde aktif yap
   
   // Calculate distance to factory
   const distance = calculateDistance(
@@ -179,14 +163,27 @@ app.post('/api/driver/location', (req, res) => {
     FACTORY_LOCATION.lng
   );
   
+  // Calculate ETA (assuming average speed of 50 km/h)
+  const averageSpeed = 50; // km/h
+  const etaMinutes = Math.round((distance / averageSpeed) * 60);
+  
+  driver.distanceToFactory = distance.toFixed(2);
+  driver.etaMinutes = etaMinutes;
+  
   // Broadcast to admin dashboard
   io.emit('locationUpdate', {
     driverId: driver.id,
     location,
-    distanceToFactory: distance.toFixed(2)
+    distanceToFactory: distance.toFixed(2),
+    etaMinutes: etaMinutes,
+    status: driver.status
   });
   
-  res.json({ success: true, distanceToFactory: distance.toFixed(2) });
+  res.json({ 
+    success: true, 
+    distanceToFactory: distance.toFixed(2),
+    etaMinutes: etaMinutes 
+  });
 });
 
 app.post('/api/driver/destination', (req, res) => {

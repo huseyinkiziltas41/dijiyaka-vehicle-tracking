@@ -20,11 +20,19 @@ export default function LocationScreen({ navigation }) {
   const [distance, setDistance] = useState(null);
   const [driverId, setDriverId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [locationInterval, setLocationInterval] = useState(null);
 
   useEffect(() => {
     loadDriverId();
     requestLocationPermission();
-  }, []);
+    
+    // Cleanup interval on component unmount
+    return () => {
+      if (locationInterval) {
+        clearInterval(locationInterval);
+      }
+    };
+  }, [locationInterval]);
 
   const loadDriverId = async () => {
     try {
@@ -90,42 +98,81 @@ export default function LocationScreen({ navigation }) {
     setDistance(distance.toFixed(2));
   };
 
-  const shareLocation = async () => {
+  const sendLocationUpdate = async (currentLocation) => {
+    if (!currentLocation || !driverId) return;
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/driver/location`, {
+        driverId: driverId,
+        location: {
+          lat: currentLocation.latitude,
+          lng: currentLocation.longitude
+        }
+      });
+
+      if (response.data.success) {
+        const newDistance = response.data.distanceToFactory;
+        setDistance(newDistance);
+        console.log(`Konum güncellendi: ${newDistance} km, ETA: ${response.data.etaMinutes} dk`);
+      }
+    } catch (error) {
+      console.error('Konum güncelleme hatası:', error);
+    }
+  };
+
+  const startLocationTracking = async () => {
     if (!location || !driverId) {
       Alert.alert('Hata', 'Konum veya sürücü bilgisi bulunamadı');
       return;
     }
 
     setIsSharing(true);
+    
+    // İlk konum paylaşımı
+    await sendLocationUpdate(location);
+    
+    // Set destination to factory
     try {
-      const response = await axios.post(`${API_BASE_URL}/driver/location`, {
+      await axios.post(`${API_BASE_URL}/driver/destination`, {
         driverId: driverId,
-        location: {
-          lat: location.latitude,
-          lng: location.longitude
-        }
+        destination: 'Philip Morris Fabrikası'
       });
-
-      if (response.data.success) {
-        Alert.alert(
-          'Başarılı',
-          `Konumunuz paylaşıldı!\nFabrikaya mesafe: ${response.data.distanceToFactory} km`,
-          [
-            { text: 'Tamam', onPress: () => navigation.goBack() }
-          ]
-        );
-        
-        // Set destination to factory
-        await axios.post(`${API_BASE_URL}/driver/destination`, {
-          driverId: driverId,
-          destination: 'Philip Morris Fabrikası'
-        });
-      }
     } catch (error) {
-      console.error('Share location error:', error);
-      Alert.alert('Hata', 'Konum paylaşılamadı. Lütfen tekrar deneyin.');
-    } finally {
+      console.error('Hedef ayarlama hatası:', error);
+    }
+
+    // Her 1 dakikada bir konum güncelle
+    const interval = setInterval(async () => {
+      try {
+        const currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+        
+        setLocation(currentLocation.coords);
+        await sendLocationUpdate(currentLocation.coords);
+      } catch (error) {
+        console.error('Otomatik konum güncelleme hatası:', error);
+      }
+    }, 60000); // 60 saniye = 1 dakika
+
+    setLocationInterval(interval);
+    
+    Alert.alert(
+      'Konum Takibi Başladı',
+      `Konumunuz her dakika otomatik olarak güncelleniyor.\nFabrikaya mesafe: ${distance} km`,
+      [
+        { text: 'Tamam' },
+        { text: 'Takibi Durdur', onPress: stopLocationTracking }
+      ]
+    );
+  };
+
+  const stopLocationTracking = () => {
+    if (locationInterval) {
+      clearInterval(locationInterval);
+      setLocationInterval(null);
       setIsSharing(false);
+      Alert.alert('Bilgi', 'Konum takibi durduruldu');
     }
   };
 
@@ -187,11 +234,11 @@ export default function LocationScreen({ navigation }) {
 
         <TouchableOpacity 
           style={[styles.shareButton, (!location || isSharing) && styles.buttonDisabled]}
-          onPress={shareLocation}
-          disabled={!location || isSharing}
+          onPress={isSharing ? stopLocationTracking : startLocationTracking}
+          disabled={!location}
         >
           <Text style={styles.shareButtonText}>
-            {isSharing ? 'Gönderiliyor...' : '📤 Konumu Paylaş'}
+            {isSharing ? '⏹️ Takibi Durdur' : '📍 Konum Takibini Başlat'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -199,10 +246,10 @@ export default function LocationScreen({ navigation }) {
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>ℹ️ Bilgi</Text>
         <Text style={styles.infoText}>
-          • Konumunuz sadece iş amaçlı kullanılır{'\n'}
-          • Verileriniz güvenli şekilde şifrelenir{'\n'}
-          • Konum paylaşımını istediğiniz zaman durdurabilirsiniz{'\n'}
-          • GPS doğruluğu için açık alanda bulunun
+          • Konum takibi her 1 dakikada bir otomatik güncellenir{'\n'}
+          • Fabrikaya olan mesafe ve tahmini varış süresi hesaplanır{'\n'}
+          • 5 dakikadan fazla güncelleme yoksa durumunuz pasif olur{'\n'}
+          • Takibi istediğiniz zaman başlatıp durdurabilirsiniz
         </Text>
       </View>
     </ScrollView>

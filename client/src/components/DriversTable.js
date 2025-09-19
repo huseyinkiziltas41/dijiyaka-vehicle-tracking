@@ -58,9 +58,11 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
 
   const getStatusBadge = (status) => {
     const statusMap = {
-      'online': { text: 'Aktif', class: 'status-online' },
+      'active': { text: 'Aktif', class: 'status-active' },
+      'inactive': { text: 'Pasif', class: 'status-inactive' },
       'offline': { text: 'Çevrimdışı', class: 'status-offline' },
-      'en-route': { text: 'Yolda', class: 'status-en-route' }
+      'online': { text: 'Aktif', class: 'status-active' }, // backward compatibility
+      'en-route': { text: 'Yolda', class: 'status-active' } // backward compatibility
     };
     
     const statusInfo = statusMap[status] || { text: status, class: 'status-offline' };
@@ -94,6 +96,7 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
             <th>Araç Plakası</th>
             <th>Durum</th>
             <th>Mesafe</th>
+            <th>ETA</th>
             <th>Son Güncelleme</th>
             <th>İşlemler</th>
           </tr>
@@ -123,6 +126,15 @@ const DriversTable = ({ drivers, onDriverDeleted }) => {
                   </span>
                 ) : (
                   <span style={{ color: '#94a3b8' }}>Konum yok</span>
+                )}
+              </td>
+              <td>
+                {driver.etaMinutes ? (
+                  <span className="eta-badge">
+                    {driver.etaMinutes} dk
+                  </span>
+                ) : (
+                  <span style={{ color: '#94a3b8' }}>-</span>
                 )}
               </td>
               <td>
