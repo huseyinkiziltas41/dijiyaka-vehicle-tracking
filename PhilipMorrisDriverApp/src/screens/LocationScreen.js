@@ -102,6 +102,10 @@ export default function LocationScreen({ navigation }) {
     if (!currentLocation || !driverId) return;
 
     try {
+      console.log(`API URL: ${API_BASE_URL}/driver/location`);
+      console.log(`Driver ID: ${driverId}`);
+      console.log(`Location: ${JSON.stringify({lat: currentLocation.latitude, lng: currentLocation.longitude})}`);
+      
       const response = await axios.post(`${API_BASE_URL}/driver/location`, {
         driverId: driverId,
         location: {
@@ -117,6 +121,8 @@ export default function LocationScreen({ navigation }) {
       }
     } catch (error) {
       console.error('Konum güncelleme hatası:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      console.error('Status code:', error.response?.status);
     }
   };
 
@@ -133,12 +139,15 @@ export default function LocationScreen({ navigation }) {
     
     // Set destination to factory
     try {
+      console.log(`Setting destination API URL: ${API_BASE_URL}/driver/destination`);
       await axios.post(`${API_BASE_URL}/driver/destination`, {
         driverId: driverId,
         destination: 'Philip Morris Fabrikası'
       });
     } catch (error) {
       console.error('Hedef ayarlama hatası:', error);
+      console.error('Destination error details:', error.response?.data || error.message);
+      console.error('Destination status code:', error.response?.status);
     }
 
     // Her 1 dakikada bir konum güncelle

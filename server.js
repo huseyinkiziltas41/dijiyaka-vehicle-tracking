@@ -145,9 +145,13 @@ app.post('/api/driver/login', (req, res) => {
 app.post('/api/driver/location', (req, res) => {
   const { driverId, location } = req.body;
   
+  console.log('Location update request:', { driverId, location });
+  console.log('Available drivers:', drivers.map(d => ({ id: d.id, name: d.name })));
+  
   const driver = drivers.find(d => d.id === driverId);
   
   if (!driver) {
+    console.log(`Driver not found: ${driverId}`);
     return res.status(404).json({ error: 'Sürücü bulunamadı' });
   }
 
