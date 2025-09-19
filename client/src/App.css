@@ -21,6 +21,26 @@
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.version-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+  z-index: 10;
+}
+
 .header-title {
   display: flex;
   align-items: center;
@@ -183,6 +203,14 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 500px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
 }
 
 .section-header {

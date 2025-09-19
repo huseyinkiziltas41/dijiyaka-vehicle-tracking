@@ -1,38 +1,40 @@
 import React from 'react';
 
 const Header = ({ connectionStatus }) => {
-  const getConnectionStatusText = () => {
+  const getStatusColor = () => {
     switch (connectionStatus) {
-      case 'connected':
-        return 'Bağlı';
-      case 'disconnected':
-        return 'Bağlantı Kesildi';
-      case 'connecting':
-        return 'Bağlanıyor...';
-      default:
-        return 'Bilinmiyor';
+      case 'connected': return '#10b981';
+      case 'connecting': return '#f59e0b';
+      case 'disconnected': return '#ef4444';
+      default: return '#6b7280';
     }
   };
 
-  const getConnectionClass = () => {
-    return `connection-indicator connection-${connectionStatus}`;
+  const getStatusText = () => {
+    switch (connectionStatus) {
+      case 'connected': return 'Bağlı';
+      case 'connecting': return 'Bağlanıyor...';
+      case 'disconnected': return 'Bağlantı Kesildi';
+      default: return 'Bilinmiyor';
+    }
   };
 
   return (
-    <header className="App-header">
+    <header className="header">
       <div className="header-content">
-        <div className="header-title">
-          <div className="company-logo">🚛</div>
-          <div>
-            <h1>Philip Morris</h1>
-            <div style={{ fontSize: '0.875rem', opacity: 0.9 }}>
-              Araç Takip Sistemi
-            </div>
-          </div>
+        <div className="header-left">
+          <div className="version-badge">v2.1.0</div>
+          <h1 className="header-title">Philip Morris Araç Takip Sistemi</h1>
+          <div className="header-subtitle">Yönetim Paneli</div>
         </div>
-        <div className="header-status">
-          <div className={getConnectionClass()}></div>
-          <span>{getConnectionStatusText()}</span>
+        <div className="header-right">
+          <div className="connection-status">
+            <div 
+              className="status-indicator"
+              style={{ backgroundColor: getStatusColor() }}
+            ></div>
+            <span className="status-text">{getStatusText()}</span>
+          </div>
         </div>
       </div>
     </header>

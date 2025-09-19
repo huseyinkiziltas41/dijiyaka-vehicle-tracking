@@ -20,18 +20,10 @@ export default function LocationScreen({ navigation }) {
   const [distance, setDistance] = useState(null);
   const [driverId, setDriverId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [locationInterval, setLocationInterval] = useState(null);
 
   useEffect(() => {
     loadDriverId();
     requestLocationPermission();
-    
-    // Cleanup interval on component unmount
-    return () => {
-      if (locationInterval) {
-        clearInterval(locationInterval);
-      }
-    };
   }, []);
 
   const loadDriverId = async () => {
@@ -98,9 +90,13 @@ export default function LocationScreen({ navigation }) {
     setDistance(distance.toFixed(2));
   };
 
-  const shareLocationOnce = async () => {
-    if (!location || !driverId) return;
+  const shareLocation = async () => {
+    if (!location || !driverId) {
+      Alert.alert('Hata', 'Konum veya sürücü bilgisi bulunamadı');
+      return;
+    }
 
+    setIsSharing(true);
     try {
       const response = await axios.post(`${API_BASE_URL}/driver/location`, {
         driverId: driverId,
@@ -111,7 +107,13 @@ export default function LocationScreen({ navigation }) {
       });
 
       if (response.data.success) {
-        setDistance(response.data.distanceToFactory);
+        Alert.alert(
+          'Başarılı',
+          `Konumunuz paylaşıldı!\nFabrikaya mesafe: ${response.data.distanceToFactory} km`,
+          [
+            { text: 'Tamam', onPress: () => navigation.goBack() }
+          ]
+        );
         
         // Set destination to factory
         await axios.post(`${API_BASE_URL}/driver/destination`, {
@@ -121,49 +123,10 @@ export default function LocationScreen({ navigation }) {
       }
     } catch (error) {
       console.error('Share location error:', error);
+      Alert.alert('Hata', 'Konum paylaşılamadı. Lütfen tekrar deneyin.');
+    } finally {
+      setIsSharing(false);
     }
-  };
-
-  const startLocationSharing = async () => {
-    if (!location || !driverId) {
-      Alert.alert('Hata', 'Konum veya sürücü bilgisi bulunamadı');
-      return;
-    }
-
-    setIsSharing(true);
-    
-    // İlk konum paylaşımı
-    await shareLocationOnce();
-    
-    // 10 saniyede bir konum paylaş
-    const interval = setInterval(async () => {
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation.coords);
-      calculateDistance(currentLocation.coords);
-      await shareLocationOnce();
-    }, 10000);
-    
-    setLocationInterval(interval);
-    
-    Alert.alert(
-      'Konum Paylaşımı Başlatıldı',
-      'Konumunuz 10 saniyede bir otomatik olarak paylaşılıyor. Durdurmak için "Paylaşımı Durdur" butonuna basın.',
-      [{ text: 'Tamam' }]
-    );
-  };
-
-  const stopLocationSharing = () => {
-    if (locationInterval) {
-      clearInterval(locationInterval);
-      setLocationInterval(null);
-    }
-    setIsSharing(false);
-    
-    Alert.alert(
-      'Konum Paylaşımı Durduruldu',
-      'Artık konumunuz paylaşılmıyor.',
-      [{ text: 'Tamam' }]
-    );
   };
 
   return (
@@ -222,35 +185,23 @@ export default function LocationScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
 
-        {!isSharing ? (
-          <TouchableOpacity 
-            style={[styles.shareButton, !location && styles.buttonDisabled]}
-            onPress={startLocationSharing}
-            disabled={!location}
-          >
-            <Text style={styles.shareButtonText}>
-              🚀 Konum Paylaşımını Başlat
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity 
-            style={styles.stopButton}
-            onPress={stopLocationSharing}
-          >
-            <Text style={styles.stopButtonText}>
-              ⏹️ Paylaşımı Durdur
-            </Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity 
+          style={[styles.shareButton, (!location || isSharing) && styles.buttonDisabled]}
+          onPress={shareLocation}
+          disabled={!location || isSharing}
+        >
+          <Text style={styles.shareButtonText}>
+            {isSharing ? 'Gönderiliyor...' : '📤 Konumu Paylaş'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>ℹ️ Bilgi</Text>
         <Text style={styles.infoText}>
-          • Konum paylaşımı 10 saniyede bir otomatik güncellenir{'\n'}
           • Konumunuz sadece iş amaçlı kullanılır{'\n'}
           • Verileriniz güvenli şekilde şifrelenir{'\n'}
-          • Uygulamadan çıkınca paylaşım otomatik durur{'\n'}
+          • Konum paylaşımını istediğiniz zaman durdurabilirsiniz{'\n'}
           • GPS doğruluğu için açık alanda bulunun
         </Text>
       </View>
@@ -385,22 +336,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#94a3b8',
   },
   shareButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  stopButton: {
-    backgroundColor: '#dc2626',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    shadowColor: '#dc2626',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  stopButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
