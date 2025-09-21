@@ -81,7 +81,7 @@ export default function LocationScreen({ navigation }) {
   };
 
   const calculateDistance = (coords) => {
-    // Philip Morris factory coordinates
+    // DİJİYAKA factory coordinates
     const factoryLat = 38.19970884298463;
     const factoryLng = 27.367337114805427;
     
@@ -142,7 +142,7 @@ export default function LocationScreen({ navigation }) {
       console.log(`Setting destination API URL: ${API_BASE_URL}/driver/destination`);
       await axios.post(`${API_BASE_URL}/driver/destination`, {
         driverId: driverId,
-        destination: 'Philip Morris Fabrikası'
+        destination: 'DİJİYAKA Fabrikası'
       });
     } catch (error) {
       console.error('Hedef ayarlama hatası:', error);
@@ -190,7 +190,7 @@ export default function LocationScreen({ navigation }) {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>📍 Konum Paylaşımı</Text>
         <Text style={styles.headerSubtitle}>
-          GPS konumunuzu Philip Morris yönetim sistemine gönderin
+          GPS konumunuzu DİJİYAKA yönetim sistemine gönderin
         </Text>
       </View>
 
@@ -226,7 +226,7 @@ export default function LocationScreen({ navigation }) {
         <View style={styles.distanceCard}>
           <Text style={styles.cardTitle}>🏭 Fabrikaya Mesafe</Text>
           <Text style={styles.distanceValue}>{distance} km</Text>
-          <Text style={styles.distanceSubtext}>Philip Morris Fabrikası</Text>
+          <Text style={styles.distanceSubtext}>DİJİYAKA Fabrikası</Text>
         </View>
       )}
 

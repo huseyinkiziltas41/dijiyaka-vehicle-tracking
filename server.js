@@ -16,11 +16,11 @@ const io = socketIo(server, {
 
 const PORT = process.env.PORT || 3000;
 
-// Philip Morris factory coordinates
+// DİJİYAKA factory coordinates (Manisa)
 const FACTORY_LOCATION = {
   lat: 38.19970884298463,
   lng: 27.367337114805427,
-  name: "Philip Morris Fabrikası"
+  name: 'DİJİYAKA Fabrikası'
 };
 
 // In-memory storage for drivers (in production, use a database)
@@ -277,7 +277,7 @@ app.get('*', (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🚛 Philip Morris Araç Takip Sistemi ${PORT} portunda çalışıyor`);
+  console.log(`🚛 DİJİYAKA Araç Takip Sistemi ${PORT} portunda çalışıyor`);
   console.log(`📍 Fabrika Konumu: ${FACTORY_LOCATION.lat}, ${FACTORY_LOCATION.lng}`);
   console.log(`🌐 Admin Panel: http://localhost:${PORT}`);
 });

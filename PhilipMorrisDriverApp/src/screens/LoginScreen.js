@@ -63,7 +63,7 @@ export default function LoginScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <Text style={styles.logo}>🚛</Text>
-          <Text style={styles.title}>Philip Morris</Text>
+          <Text style={styles.title}>DİJİYAKA</Text>
           <Text style={styles.subtitle}>Araç Takip Sistemi</Text>
         </View>
 

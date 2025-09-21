@@ -53,7 +53,7 @@ export default function App() {
           name="Login" 
           component={LoginScreen} 
           options={{ 
-            title: 'Philip Morris Sürücü Girişi',
+            title: 'DİJİYAKA Sürücü Girişi',
             headerShown: false
           }} 
         />

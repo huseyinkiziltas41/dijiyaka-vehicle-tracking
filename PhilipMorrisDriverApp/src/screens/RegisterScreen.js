@@ -73,7 +73,7 @@ export default function RegisterScreen({ navigation }) {
         <View style={styles.formContainer}>
           <Text style={styles.title}>Sürücü Kaydı</Text>
           <Text style={styles.subtitle}>
-            Philip Morris araç takip sistemine katılın
+            DİJİYAKA araç takip sistemine katılın
           </Text>
           
           <View style={styles.inputContainer}>

@@ -62,7 +62,7 @@ const MapView = ({ drivers, factoryLocation }) => {
       .bindPopup(`
         <div style="text-align: center; padding: 8px;">
           <strong style="color: #1e3a8a;">${factoryLocation.name}</strong><br>
-          <small style="color: #64748b;">Philip Morris Fabrikası</small>
+          <small style="color: #64748b;">DİJİYAKA Fabrikası</small>
         </div>
       `);
 

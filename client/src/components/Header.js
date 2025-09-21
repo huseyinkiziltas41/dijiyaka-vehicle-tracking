@@ -24,7 +24,7 @@ const Header = ({ connectionStatus }) => {
       <div className="header-content">
         <div className="header-left">
           <div className="version-badge">v2.1.0</div>
-          <h1 className="header-title">Philip Morris Araç Takip Sistemi</h1>
+          <h1 className="header-title">DİJİYAKA Araç Takip Sistemi</h1>
           <div className="header-subtitle">Yönetim Paneli</div>
         </div>
         <div className="header-right">
