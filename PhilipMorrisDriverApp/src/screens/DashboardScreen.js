@@ -11,7 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const API_BASE_URL = 'https://philip-morris-tracking.onrender.com/api';
+const API_BASE_URL = 'https://dijiyaka-vehicle-tracking.onrender.com/api';
 
 export default function DashboardScreen({ navigation }) {
   const [driverData, setDriverData] = useState(null);

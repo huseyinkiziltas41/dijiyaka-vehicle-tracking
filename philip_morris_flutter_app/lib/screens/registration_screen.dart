@@ -19,7 +19,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _plateController = TextEditingController();
   bool _isLoading = false;
 
-  static const String apiBaseUrl = 'https://philip-morris-tracking.onrender.com/api';
+  static const String apiBaseUrl = 'https://dijiyaka-vehicle-tracking.onrender.com/api';
 
   @override
   void dispose() {

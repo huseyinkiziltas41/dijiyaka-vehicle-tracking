@@ -21,7 +21,7 @@ class _LocationScreenState extends State<LocationScreen> {
   String? _driverId;
   Timer? _locationTimer;
 
-  static const String apiBaseUrl = 'https://philip-morris-tracking.onrender.com/api';
+  static const String apiBaseUrl = 'https://dijiyaka-vehicle-tracking.onrender.com/api';
   
   // DİJİYAKA factory coordinates
   static const double factoryLat = 38.19970884298463;

@@ -289,7 +289,7 @@ npm start  # server.js'i çalıştırır
 
 **3. Tek URL'den Her Şey:**
 ```
-https://dijiyaka-tracking.onrender.com
+https://dijiyaka-vehicle-tracking.onrender.com
 ├── /api/*          # Backend API endpoints (server.js)
 ├── /               # Admin Dashboard (client/build/)
 ├── /static/*       # React static files
@@ -299,7 +299,7 @@ https://dijiyaka-tracking.onrender.com
 ### 📊 Deployment Detayları:
 
 **Platform:** Render.com
-- **URL:** https://dijiyaka-tracking.onrender.com
+- **URL:** https://dijiyaka-vehicle-tracking.onrender.com
 - **Plan:** Free tier
 - **Auto Deploy:** GitHub push ile otomatik
 - **Build Time:** 3-6 dakika
@@ -423,7 +423,7 @@ flutter logs               # Device logs
 # Problem: Mobile app API'ye bağlanamıyor
 # Çözüm: 
 # - Internet bağlantısı kontrol et
-# - API URL doğru mu: https://dijiyaka-tracking.onrender.com/api
+# - API URL doğru mu: https://dijiyaka-vehicle-tracking.onrender.com/api
 # - CORS ayarları server.js'de aktif mi
 ```
 
@@ -506,7 +506,7 @@ cd philip_morris_flutter_app && flutter pub upgrade
 **API Test:**
 ```bash
 # Postman veya curl ile API test
-curl https://dijiyaka-tracking.onrender.com/api/drivers
+curl https://dijiyaka-vehicle-tracking.onrender.com/api/drivers
 ```
 
 **Database Kontrol:**
@@ -539,8 +539,8 @@ curl https://dijiyaka-tracking.onrender.com/api/drivers
 - **✅ Deployment:** Production'da aktif
 
 ### Test URL'leri:
-- **Backend API:** https://dijiyaka-tracking.onrender.com/api
-- **Admin Dashboard:** https://dijiyaka-tracking.onrender.com
+- **Backend API:** https://dijiyaka-vehicle-tracking.onrender.com/api
+- **Admin Dashboard:** https://dijiyaka-vehicle-tracking.onrender.com
 - **React Native:** Expo QR kod ile
 - **Flutter:** `flutter run` komutu ile
 

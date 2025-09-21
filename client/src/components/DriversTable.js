@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://philip-morris-tracking.onrender.com/api' 
+  ? 'https://dijiyaka-vehicle-tracking.onrender.com/api' 
   : 'http://localhost:3000/api';
 
 const DriversTable = ({ drivers, onDriverDeleted }) => {

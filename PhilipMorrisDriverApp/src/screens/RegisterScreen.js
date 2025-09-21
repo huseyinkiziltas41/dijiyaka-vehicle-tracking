@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const API_BASE_URL = 'https://philip-morris-tracking.onrender.com/api';
+const API_BASE_URL = 'https://dijiyaka-vehicle-tracking.onrender.com/api';
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState('');

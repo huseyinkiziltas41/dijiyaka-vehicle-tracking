@@ -6,10 +6,10 @@ const ENV = {
     API_BASE_URL: 'http://192.168.1.126:3000/api', // Local development
   },
   staging: {
-    API_BASE_URL: 'https://philip-morris-tracking.onrender.com/api', // Staging server
+    API_BASE_URL: 'https://dijiyaka-vehicle-tracking.onrender.com/api', // Staging server
   },
   prod: {
-    API_BASE_URL: 'https://philip-morris-tracking.onrender.com/api', // Production server
+    API_BASE_URL: 'https://dijiyaka-vehicle-tracking.onrender.com/api', // Production server
   }
 };
 
