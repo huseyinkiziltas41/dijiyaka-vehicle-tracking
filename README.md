@@ -1,6 +1,6 @@
-# Philip Morris Araç Takip Sistemi
+# Dijiyaka Araç Takip Sistemi
 
-Philip Morris fabrikası için geliştirilmiş profesyonel araç takip sistemi. Sürücülerin konumlarını gerçek zamanlı olarak takip eder ve fabrikaya olan mesafelerini hesaplar.
+ Sürücülerin konumlarını gerçek zamanlı olarak takip eder ve fabrikaya olan mesafelerini hesaplar.
 
 ## 🚀 Özellikler
 
@@ -20,7 +20,7 @@ Philip Morris fabrikası için geliştirilmiş profesyonel araç takip sistemi. 
 
 ## 🏭 Fabrika Bilgileri
 
-**Philip Morris Fabrikası**
+**Fabrika**
 - Koordinatlar: `38.19970884298463, 27.367337114805427`
 - Sistem bu koordinatlara olan mesafeleri otomatik hesaplar
 
